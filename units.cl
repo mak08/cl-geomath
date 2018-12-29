@@ -1,13 +1,52 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-28 03:02:55>
+;;; Last Modified <michael 2018-12-29 17:21:38>
 
 (in-package :cl-geomath)
 
 
 (declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Constants
+
+(defconstant +radius+
+  ;; 6371229d0
+  6218884d0
+  ;; 6243759d0
+  "Assumed radius of Earth in metres")
+
+(defconstant +standard-nautical-mile+ 1852.216d0)
+
+(defconstant +nautical-mile+
+  (/ (* 2 pi +radius+) (* 360 60)))
+
+(defconstant +pi/180+
+  (/ pi 180))
+
+(defconstant +deg-length+
+  (/ (* 2 pi +radius+) 360)
+  "Distance of 1° at the equator")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Unit conversion
+
+(defconstant +knots-to-m/s+
+  (/ +nautical-mile+ 3600d0))
+
+(defun knots-to-m/s (knots)
+  ;; (* 463.0 (/ knots 900.0)))
+  (* knots +knots-to-m/s+))
+
+(defun m/s-to-knots (m/s)
+  ;; (* 900.0 (/ m/s 463.0)))
+  (/ m/s +knots-to-m/s+))
+
+(defun m/s-to-kM/h (m/s)
+  (* m/s 3.6))
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Trigonometric units
 
