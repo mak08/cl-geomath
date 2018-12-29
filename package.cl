@@ -1,11 +1,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-29 02:05:19>
+;;; Last Modified <michael 2018-12-29 17:48:59>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI")
-  (:export "LATLNG"
+  (:export "+RADIUS+"
+           "+NAUTICAL-MILE+"
+           "+STANDARD-NAUTICAL-MILE+"
+           
+           "LATLNG"
            "MAKE-LATLNG"
            "COPY-LATLNG"
            "LATLNG-LATR"
@@ -15,6 +19,10 @@
 
            "ROUND-TO-DIGITS"
 
+           "KNOTS-TO-M/S"
+           "M/S-TO-KNOTS"
+           "M/S-TO-KM/H"
+           
            "DEG"
            "RAD"
 
@@ -42,7 +50,25 @@
            "COURSE-DISTANCE"
 
            "ADD-DISTANCE-EXACT"
-           "ADD-DISTANCE-ESTIMATE" ))
+           "ADD-DISTANCE-ESTIMATE"
+
+           "FIND-PLACE"
+           "+ALICANTE+"
+           "+CAPETOWN+"
+           "+CARTHAGO+"
+           "+FEHMARN+"
+           "+FREMANTLE+"
+           "+GIBRALTAR+"
+           "+LACORUNA+"
+           "+LESSABLES+"
+           "+LISBON+"
+           "+LIZARD-POINT+"
+           "+MARSEILLE+"
+           "+NEW-YORK+"
+           "+OUESSANT+"
+           "+PORTOSANTO+"
+           "+YSTAD+"
+           ))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
