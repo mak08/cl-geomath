@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-28 12:10:10>
+;;; Last Modified <michael 2018-12-29 02:05:19>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI")
@@ -17,7 +17,10 @@
 
            "DEG"
            "RAD"
+
+           "HEADING"
            
+           "ANGLE-R"
            "ANGLE"
            "ENORM"
            "P2UV"

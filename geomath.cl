@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-28 11:36:10>
+;;; Last Modified <michael 2018-12-29 02:20:12>
 
 (in-package :cl-geomath)
 
@@ -76,10 +76,21 @@
 (defun angle (u v)
   (declare (double-float u v))
   (let ((angle
-         ;; (+ 180d0 (* 180/pi (atan u v)))
          (+ 180d0 (* 180/pi (atan u v)))))
-    angle))
+    (if (< angle 360d0)
+        angle
+        (- angle 360d0))))
 (declaim (notinline angle))
+
+(declaim (inline angle-r))
+(defun angle-r (u v)
+  (declare (double-float u v))
+  (let ((angle
+         (+ pi (atan u v))))
+    (if (< angle (* 2 pi))
+        angle
+        (- angle (* 2 pi)))))
+(declaim (notinline angle-r))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Euclidian Norm
@@ -96,8 +107,8 @@
 (defun p2c (a r)
   (let ((c (cis a)))
     (values 
-     (* r (imagpart c))
-     (* r (realpart c)))))
+     (- (* r (imagpart c)))
+     (- (* r (realpart c))))))
 (declaim (notinline p2c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
