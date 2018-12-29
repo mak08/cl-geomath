@@ -1,31 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-29 02:20:12>
+;;; Last Modified <michael 2018-12-29 17:20:26>
 
 (in-package :cl-geomath)
 
 
 (declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Constants
-
-(defconstant +radius+
-  ;; 6371229d0
-  ;; 6218884d0
-  6243759d0
-  "Assumed radius of Earth in metres")
-
-(defconstant +nautical-mile+
-  (/ (* 2 pi +radius+) (* 360 60)))
-
-(defconstant +pi/180+
-  (/ pi 180))
-
-(defconstant +deg-length+
-  (/ (* 2 pi +radius+) 360)
-  "Distance of 1° at the equator")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Lat&Lng
@@ -37,19 +18,21 @@
   (latr% 0d0 :type double-float)
   (lngr% 0d0 :type double-float))
 
-
+(declaim (inline latlng-lat))
 (defun latlng-lat (latlng)
   (or (latlng-lat% latlng)
       (setf (latlng-lat% latlng)
             (deg (latlng-latr latlng)))))
+(declaim (notinline latlng-lat))
 
+(declaim (inline latlng-lng))
 (defun latlng-lng (latlng)
   (or (latlng-lng% latlng)
       (setf (latlng-lng% latlng)
             (deg (latlng-lngr latlng)))))
+(declaim (notinline latlng-lng))
 
-(declaim (inline latlng-lng latlng-lngr))
-
+(declaim (inline latlng-latr))
 (defun latlng-latr (latlng)
   (declare (inline rad))
   (cond ((eql (latlng-latr% latlng) 0d0)
@@ -57,7 +40,9 @@
                (rad (latlng-lat latlng))))
         (t
          (latlng-latr% latlng))))
+(declaim (inline latlng-latr))
 
+(declaim (inline latlng-lngr))
 (defun latlng-lngr (latlng)
   (declare (inline rad))
   (cond ((eql (latlng-lngr% latlng) 0d0)
@@ -65,7 +50,7 @@
                (rad (latlng-lng latlng))))
         (t
          (latlng-lngr% latlng))))
-(declaim (notinline latlng-latr latlng-lngr))
+(declaim (notinline latlng-lngr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Converting GRIB U/V values to DEG

@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-29 02:41:32>
+;;; Last Modified <michael 2018-12-29 18:02:32>
 
 (in-package :cl-geomath)
 
@@ -80,12 +80,12 @@
              5d0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(loop
-   :for u :from 0d0 :to 10d0
-   :do (loop
-          :for v :from 0d0 :to 10d0
-          :do (check-delta-equal (p2c (angle-r u v) (enorm u v)) u))
-   :finally (return t))
+
+(check-delta-equal (p2c (angle-r 0d0 10d0) (enorm 0d0 10d0)) 0d0)
+(check-delta-equal (p2c (angle-r 5d0 10d0) (enorm 5d0 10d0)) 5d0)
+(check-delta-equal (p2c (angle-r 10d0 10d0) (enorm 10d0 10d0)) 10d0)
+(check-delta-equal (p2c (angle-r 10d0 5d0) (enorm 10d0 5d0)) 10d0)
+(check-delta-equal (p2c (angle-r 10d0 0d0) (enorm 10d0 0d0)) 10d0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (check-delta-equal
@@ -152,6 +152,13 @@
 (check-delta-equal
  (course-angle-d (make-latlng :lat% 0d0 :lng% 0d0) (make-latlng :lat% 1d0 :lng% 0d0))
  0.0d0)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(check-equal (/ (course-distance +new-york+ +lizard-point+) +nautical-mile+)
+             2910.838895539127d0)
+(check-equal (/ (course-distance +capetown+ +lizard-point+) +nautical-mile+)
+             5086.220135360448d0)
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
