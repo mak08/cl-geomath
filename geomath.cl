@@ -1,12 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-29 17:20:26>
+;;; Last Modified <michael 2019-01-03 01:04:44>
+(declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
 
 (in-package :cl-geomath)
-
-
-(declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Lat&Lng
@@ -278,12 +276,15 @@
 (deftype heading () `(integer 0 360))
 (deftype angle () `(double-float -179.99999999d0 180.0d0))
 
+(declaim (inline normalize-heading))
 (defun normalize-heading (value)
-  (if (> value 360)
-      (- value 360)
-      (if (< value 0)
-          (+ value 360)
+  (declare (double-float value))
+  (if (> value 360d0)
+      (- value 360d0)
+      (if (< value 0d0)
+          (+ value 360d0)
           value)))
+(declaim (notinline normalize-heading))
 
 (declaim (inline normalize-angle))
 (defun normalize-angle (value)
