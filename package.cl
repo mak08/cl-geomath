@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-29 17:48:59>
+;;; Last Modified <michael 2019-01-05 10:35:49>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI")
@@ -16,6 +16,9 @@
            "LATLNG-LNGR"
            "LATLNG-LAT"
            "LATLNG-LNG"
+
+           "LONGITUDE-BETWEEN"
+           "HEADING-BETWEEN"
 
            "ROUND-TO-DIGITS"
 

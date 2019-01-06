@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-03 01:04:44>
+;;; Last Modified <michael 2019-01-05 20:21:49>
 (declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
 
 (in-package :cl-geomath)
@@ -370,6 +370,37 @@
                omega
                (- (* PI 2) omega)))))))))
 (declaim (notinline course-angle-d))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; 
+
+(defun longitude-between (west east longitude)
+  (or (<= west longitude  east)
+      (and (<= east west)
+           (not (<= east longitude west)))))
+
+(defun heading-between (left right heading)
+  (cond ((<= left right)
+         (<= left heading right))
+        (t
+         (or
+          (<= left heading 360)
+          (<= 0 heading right)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Vectors
+(defstruct v x y)
+
+(defun norm (v)
+  (sqrt  (+ (* (v-x v) (v-x v)) (* (v-y v) (v-y v)))))
+(defun dp (v1 v2)
+  (+ (* (v-x v1) (v-x v2)) (* (v-y v1) (v-y v2))))
+
+(defun ccw (v1 v2 v3)
+  (- (* (- (v-x v2) (v-x v1))
+        (- (v-y v3) (v-y v1)))
+     (* (- (v-y v2) (v-y v1))
+        (- (v-x v3) (v-x v1)))))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
