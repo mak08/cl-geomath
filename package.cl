@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-05 10:35:49>
+;;; Last Modified <michael 2019-01-10 23:55:56>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI")
@@ -51,6 +51,7 @@
            "COURSE-ANGLE"
            "COURSE-ANGLE-D"
            "COURSE-DISTANCE"
+           "FAST-COURSE-DISTANCE"
 
            "ADD-DISTANCE-EXACT"
            "ADD-DISTANCE-ESTIMATE"

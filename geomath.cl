@@ -1,54 +1,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-05 20:21:49>
-(declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
+;;; Last Modified <michael 2019-01-13 02:19:16>
+
+(declaim (optimize (speed 3) (debug 0)  (space 1) (safety 0)))
 
 (in-package :cl-geomath)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Lat&Lng
-;; TODO: A latlng should only be used to represent Google Maps coordinates.
-
-(defstruct latlng
-  (lat% nil)
-  (lng% nil)
-  (latr% 0d0 :type double-float)
-  (lngr% 0d0 :type double-float))
-
-(declaim (inline latlng-lat))
-(defun latlng-lat (latlng)
-  (or (latlng-lat% latlng)
-      (setf (latlng-lat% latlng)
-            (deg (latlng-latr latlng)))))
-(declaim (notinline latlng-lat))
-
-(declaim (inline latlng-lng))
-(defun latlng-lng (latlng)
-  (or (latlng-lng% latlng)
-      (setf (latlng-lng% latlng)
-            (deg (latlng-lngr latlng)))))
-(declaim (notinline latlng-lng))
-
-(declaim (inline latlng-latr))
-(defun latlng-latr (latlng)
-  (declare (inline rad))
-  (cond ((eql (latlng-latr% latlng) 0d0)
-         (setf (latlng-latr% latlng)
-               (rad (latlng-lat latlng))))
-        (t
-         (latlng-latr% latlng))))
-(declaim (inline latlng-latr))
-
-(declaim (inline latlng-lngr))
-(defun latlng-lngr (latlng)
-  (declare (inline rad))
-  (cond ((eql (latlng-lngr% latlng) 0d0)
-         (setf (latlng-lngr% latlng)
-               (rad (latlng-lng latlng))))
-        (t
-         (latlng-lngr% latlng))))
-(declaim (notinline latlng-lngr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Converting GRIB U/V values to DEG
@@ -99,6 +57,7 @@
 
 (declaim (inline linear))
 (defun linear (fraction a b)
+  (declare (double-float fraction a b))
   (+ a (* fraction (- b a))))
 (declaim (notinline linear))
 
@@ -116,7 +75,7 @@
     (declare (double-float dw v0 v1 da v))
     v))
 (declaim (notinline bilinear))
- 
+
 (declaim (inline fraction-index))
 (defun fraction-index (value steps)
   (loop
@@ -193,9 +152,11 @@
 (declaim (inline add-distance-exact add-distance-estimate))
 (defun add-distance-exact (pos distance alpha)
   ;; Exact calculation on the spherical Earth
+  (declare (double-float distance alpha)
+           (inline latlng-latr latlng-lngr))
   (let ((lat-r (latlng-latr pos))
         (lon-r (latlng-lngr pos)))
-    (declare (double-float lat-r lon-r distance alpha))
+    (declare (double-float lat-r lon-r))
     (let* ((d (/ distance +radius+))
            (cis-d (cis d))
            (cos-d (realpart cis-d))
@@ -218,9 +179,11 @@
 (declaim (inline add-distance-estimate))
 (defun add-distance-estimate (pos distance alpha)
   ;; Approximation for short distances (<< 100km)
+  (declare (double-float distance alpha)
+           (inline latlng-latr latlng-lngr))
   (let ((lat-r (latlng-latr pos))
         (lon-r (latlng-lngr pos)))
-    (declare (double-float lat-r lon-r distance alpha))
+    (declare (double-float lat-r lon-r))
     (let* ((d (/ distance +radius+))
            (a (rad alpha))
            (d-lat-r (* d (cos a)))
@@ -231,20 +194,22 @@
 (declaim (notinline add-distance-estimate))
 
 (defun longitudinal-distance (latlng1 latlng2)
-  (let* ((l1 (latlng-lng latlng1))
-         (l2 (latlng-lng latlng2))
+  (let* ((l1 (latlng-lngr latlng1))
+         (l2 (latlng-lngr latlng2))
          (d (abs (- l1 l2))))
-    (if (<= d 180)
-        d
-        (- 360 d))))
+    (declare (double-float l1 l2 d))
+    (if (<= d pi)
+        (deg d)
+        (- 360d0 (deg d)))))
 
 (declaim (inline  longitudinal-direction))
 (defun longitudinal-direction (start dest)
-  (let* ((start-lng (latlng-lng start))
-         (dest-lng (latlng-lng dest))
+  (let* ((start-lng (latlng-lngr start))
+         (dest-lng (latlng-lngr dest))
          (sign (- start-lng dest-lng))
          (delta (abs sign)))
-    (if (<= delta 180)
+    (declare (double-float sign delta))
+    (if (<= delta pi)
         (if (<= sign 0) 1 -1)
         (if (<= sign 0) -1 1))))
 (declaim (notinline  longitudinal-direction))
@@ -288,10 +253,11 @@
 
 (declaim (inline normalize-angle))
 (defun normalize-angle (value)
+  (declare (double-float value))
   (if (<= value -180d0)
-      (+ value 360d0)
+      (the double-float (+ value 360d0))
       (if (> value 180d0)
-          (- value 360d0)
+          (the double-float (- value 360d0))
           value)))
 (declaim (notinline normalize-angle))
 
@@ -301,6 +267,8 @@
 (declaim (inline course-angle))
 (defun course-angle (origin target &optional (xi (gc-angle-hvs origin target)))
   "Compute course angle using central angle" 
+  (declare (inline latlng-latr latlng-lngr longitudinal-direction)
+           (type latlng origin target))
   (let* ((lat1 (latlng-latr origin))
          (cis-lat1 (cis lat1))
          (cos-lat1 (realpart cis-lat1))
@@ -336,6 +304,8 @@
 (declaim (inline course-angle-d))
 (defun course-angle-d (origin target &optional (dist (course-distance origin target)))
   "Compute course angle using great circle distance"
+  (declare (inline latlng-latr latlng-lngr longitudinal-direction normalize-angle)
+           (type latlng origin target))
   (let* ((lat1 (latlng-latr origin))
          (cis-lat1 (cis lat1))
          (cos-lat1 (realpart cis-lat1))
@@ -386,21 +356,6 @@
          (or
           (<= left heading 360)
           (<= 0 heading right)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Vectors
-(defstruct v x y)
-
-(defun norm (v)
-  (sqrt  (+ (* (v-x v) (v-x v)) (* (v-y v) (v-y v)))))
-(defun dp (v1 v2)
-  (+ (* (v-x v1) (v-x v2)) (* (v-y v1) (v-y v2))))
-
-(defun ccw (v1 v2 v3)
-  (- (* (- (v-x v2) (v-x v1))
-        (- (v-y v3) (v-y v1)))
-     (* (- (v-y v2) (v-y v1))
-        (- (v-x v3) (v-x v1)))))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

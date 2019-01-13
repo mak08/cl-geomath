@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-28 03:04:29>
+;;; Last Modified <michael 2019-01-10 20:50:24>
 
 (in-package :cl-geomath)
 
@@ -34,7 +34,7 @@
 ;;;     #p[ddd°mm'ss"X, ddd°mm'ss"Y]
 ;;; where X = N|S, Y = E|W
 
-(defmethod print-object ((thing latlng) stream)
+#+()(defmethod print-object ((thing latlng) stream)
   (let ((lat-value
          (decimal2dms (abs (latlng-lat thing))))
         (lng-value
@@ -60,7 +60,7 @@
     (declare (ignore open-bracket comma space close-bracket))
     (let ((lat-sign (ecase lat-marker (#\N 1) (#\S -1)))
           (lng-sign (ecase lng-marker (#\E 1) (#\W -1))))
-      (make-latlng :lat% (* lat-sign (dms2decimal latitude))
-                   :lng% (* lng-sign (dms2decimal longitude))))))
+      (make-latlng :latr% (rad (* lat-sign (dms2decimal latitude)))
+                   :lngr% (rad (* lng-sign (dms2decimal longitude)))))))
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,32 +1,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2018-12-29 17:21:38>
+;;; Last Modified <michael 2019-01-10 00:48:14>
+
+(declaim (optimize (speed 3) (debug 0)  (space 1) (safety 1)))
 
 (in-package :cl-geomath)
-
-
-(declaim (optimize (speed 3) (debug 1)  (space 0) (safety 1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Constants
 
 (defconstant +radius+
-  ;; 6371229d0
-  6218884d0
-  ;; 6243759d0
-  "Assumed radius of Earth in metres")
+  ;; 6371009d0 IUGG Mean Radius
+  6218884d0 ; VR 
+  )
 
 (defconstant +standard-nautical-mile+ 1852.216d0)
 
 (defconstant +nautical-mile+
-  (/ (* 2 pi +radius+) (* 360 60)))
+  (/ (* 2 pi +radius+) (* 360d0 60d0)))
 
 (defconstant +pi/180+
-  (/ pi 180))
+  (/ pi 180d0))
 
 (defconstant +deg-length+
-  (/ (* 2 pi +radius+) 360)
+  (/ (* 2 pi +radius+) 360d0)
   "Distance of 1° at the equator")
 
 
