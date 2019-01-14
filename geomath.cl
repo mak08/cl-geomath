@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-13 02:19:16>
+;;; Last Modified <michael 2019-01-13 22:42:52>
 
 (declaim (optimize (speed 3) (debug 0)  (space 1) (safety 0)))
 
@@ -90,7 +90,7 @@
 
 (declaim (inline bilinear-unit))
 (defun bilinear-unit (x y f00 f01 f10 f11)
-  ;; (declare (double-float x y f00 f01 f10 f11))
+  (declare (double-float x y f00 f01 f10 f11))
   (+ (* f00 (- 1d0 x) (- 1d0 y))
      (* f01 x (- 1d0 y))
      (* f10 (- 1d0 x) y)
@@ -210,8 +210,8 @@
          (delta (abs sign)))
     (declare (double-float sign delta))
     (if (<= delta pi)
-        (if (<= sign 0) 1 -1)
-        (if (<= sign 0) -1 1))))
+        (if (<= sign 0) 1d0 -1d0)
+        (if (<= sign 0) -1d0 1d0))))
 (declaim (notinline  longitudinal-direction))
 
 (declaim (inline course-distance))
@@ -327,19 +327,25 @@
                (/ (- (sin lat2) (* sin-lat1 (cos e)))
                   (* cos-lat1 (sin e))))
               (omega
-               (let ((omega%
-                      (acos cos-omega)))
-                 (if (complexp omega%)
-                     (realpart omega%)
-                     omega%)))
+               (acos (min 1.0d0 (max -1.0d0 cos-omega))))
               (ld (longitudinal-direction origin target)))
-         (declare (double-float cos-omega omega))
+         (declare (double-float cos-omega omega ld))
          (normalize-angle
-          (deg
-           (if (= ld 1)
-               omega
-               (- (* PI 2) omega)))))))))
+          (the double-float
+               (deg
+                (if (= ld 1d0)
+                    omega
+                    (- (* PI 2d0) omega))))))))))
 (declaim (notinline course-angle-d))
+
+
+#|
+(let ((omega%
+       (acos cos-omega)))
+  (if (complexp omega%)
+      (realpart omega%)
+      omega%))
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 

@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-10 00:48:14>
+;;; Last Modified <michael 2019-01-13 22:39:04>
 
 (declaim (optimize (speed 3) (debug 0)  (space 1) (safety 1)))
 
@@ -57,7 +57,7 @@
 (declaim (inline deg))
 (defun deg (x)
   (declare (double-float x))
-  (* 360 (/ x (* 2 pi))))
+  (* 360d0 (/ x (* 2d0 pi))))
 (declaim (notinline deg))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
