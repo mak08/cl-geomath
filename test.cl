@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-10 23:51:23>
+;;; Last Modified <michael 2019-03-16 22:57:36>
 
 (in-package :cl-geomath)
 
@@ -24,24 +24,33 @@
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(check-equal (bilinear 1d0 0d0 1d0 2d0 3d0 4d0)
-             2.0d0)
 (check-equal (bilinear 0d0 0d0 1d0 2d0 3d0 4d0)
              1.0d0)
 (check-equal (bilinear 0d0 1d0 1d0 2d0 3d0 4d0)
+             2.0d0)
+(check-equal (bilinear 1d0 0d0 1d0 2d0 3d0 4d0)
              3.0d0)
 (check-equal (bilinear 1d0 1d0 1d0 2d0 3d0 4d0)
              4.0d0)
 
+(check-equal (bilinear 0d0 0d0 900d0 901d0 910d0 911d0)
+             900d0)
+(check-equal (bilinear 1d0 0d0 900d0 901d0 910d0 911d0)
+             910.d0)
+(check-equal (bilinear 0d0 1d0 900d0 901d0 910d0 911d0)
+             901d0)
+(check-equal (bilinear 1d0 1d0 900d0 901d0 910d0 911d0)
+             911.0d0)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (check-equal (bilinear-unit 0d0 0d0 1d0 2d0 3d0 4d0)
              1.0d0)
-(check-equal (bilinear-unit 1d0 0d0 1d0 2d0 3d0 4d0)
+(check-equal (bilinear-unit 0d0 1d0 1d0 2d0 3d0 4d0)
              2.0d0)
+(check-equal (bilinear-unit 1d0 0d0 1d0 2d0 3d0 4d0)
+             3.0d0)
 (check-equal (bilinear-unit 1d0 1d0 1d0 2d0 3d0 4d0)
              4.0d0)
-(check-equal (bilinear-unit 0d0 1d0 1d0 2d0 3d0 4d0)
-             3.0d0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Positive u is from the west
@@ -155,10 +164,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(check-equal (/ (course-distance +new-york+ +lizard-point+) +nautical-mile+)
-             2910.838895539127d0)
-(check-equal (/ (course-distance +capetown+ +lizard-point+) +nautical-mile+)
-             5086.220135360448d0)
+(check-delta-equal (/ (course-distance +new-york+ +lizard-point+) +nautical-mile+)
+                   2910.838895539127d0)
+(check-delta-equal (/ (course-distance +capetown+ +lizard-point+) +nautical-mile+)
+                   5086.220135360448d0)
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
