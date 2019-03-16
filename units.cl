@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-13 22:39:04>
+;;; Last Modified <michael 2019-03-16 23:02:20>
 
 (declaim (optimize (speed 3) (debug 0)  (space 1) (safety 1)))
 
@@ -11,14 +11,16 @@
 ;;; Constants
 
 (defconstant +radius+
-  ;; 6371009d0 IUGG Mean Radius
-  6218884d0 ; VR 
+  6371009d0 ; IUGG Mean Radius
+  ;; 6218884d0 ; VR
   )
 
 (defconstant +standard-nautical-mile+ 1852.216d0)
 
 (defconstant +nautical-mile+
-  (/ (* 2 pi +radius+) (* 360d0 60d0)))
+  ;; (/ (* 2 pi +radius+) (* 360d0 60d0))
+  +standard-nautical-mile+
+  )
 
 (defconstant +pi/180+
   (/ pi 180d0))
@@ -32,7 +34,7 @@
 ;;; Unit conversion
 
 (defconstant +knots-to-m/s+
-  (/ +nautical-mile+ 3600d0))
+  (/ +standard-nautical-mile+ 3600d0))
 
 (defun knots-to-m/s (knots)
   ;; (* 463.0 (/ knots 900.0)))
