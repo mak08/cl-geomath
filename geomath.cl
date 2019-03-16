@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-13 22:42:52>
+;;; Last Modified <michael 2019-03-16 22:54:21>
 
 (declaim (optimize (speed 3) (debug 0)  (space 1) (safety 0)))
 
@@ -62,18 +62,17 @@
 (declaim (notinline linear))
 
 (declaim (inline bilinear))
-(defun bilinear (dw da v00 v01 v10 v11)
-  ;; Bilinear interpolation at P=(w a) given values f(w0, a0) = v00 etc.
-  ;; If a0=a1 (w0=w1) interpolate at the resp. midpoints of v00, v01, v10, v11
-  (declare (double-float dw da v00 v10 v01 v11))
-  (let* ((v0
-          (+ v00 (* dw (- v01 v00))))
-         (v1
-          (+ v10 (* dw (- v11 v10))))
-         (v
-          (+ v0 (* da (- v1 v0)))))
-    (declare (double-float dw v0 v1 da v))
-    v))
+(defun bilinear (u v w00 w01 w10 w11)
+  "Bilinear interpolation at point (u v) given values  w_ik = f(u_i, v_k)"
+  (declare (double-float u v w00 w01 w10 w11))
+  (let* ((w0
+          (+ w00 (* u (- w10 w00))))
+         (w1
+          (+ w01 (* u (- w11 w01))))
+         (w
+          (+ w0 (* v (- w1 w0)))))
+    (declare (double-float w0 w1 w))
+    w))
 (declaim (notinline bilinear))
 
 (declaim (inline fraction-index))
@@ -92,8 +91,8 @@
 (defun bilinear-unit (x y f00 f01 f10 f11)
   (declare (double-float x y f00 f01 f10 f11))
   (+ (* f00 (- 1d0 x) (- 1d0 y))
-     (* f01 x (- 1d0 y))
-     (* f10 (- 1d0 x) y)
+     (* f01 (- 1d0 x) y)
+     (* f10 x (- 1d0 y))
      (* f11 x y)))
 (declaim (notinline bilinear-unit))
 
