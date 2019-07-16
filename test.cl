@@ -1,17 +1,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-03-16 22:57:36>
+;;; Last Modified <michael 2019-03-16 23:39:37>
 
 (in-package :cl-geomath)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (eval-when (:load-toplevel :execute)
-  (defmacro check-delta-equal (form result)
+  (defmacro check-delta-equal (form result &optional (delta  0.00001))
     `(progn
        (log2:info "Checking ~a => ~a" ',form ',result)
-       (assert (< (abs (- ,form ,result)) 0.00001))
+       (assert (< (abs (- ,form ,result)) ,delta))
        t)
     )
 
@@ -165,9 +165,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (check-delta-equal (/ (course-distance +new-york+ +lizard-point+) +nautical-mile+)
-                   2910.838895539127d0)
+                   2910.838895539127d0 2d0)
 (check-delta-equal (/ (course-distance +capetown+ +lizard-point+) +nautical-mile+)
-                   5086.220135360448d0)
+                   5086.220135360448d0 3d0)
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

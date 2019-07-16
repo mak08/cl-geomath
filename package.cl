@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-10 23:55:56>
+;;; Last Modified <michael 2019-07-16 23:22:50>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI")
@@ -63,10 +63,12 @@
            "+FEHMARN+"
            "+FREMANTLE+"
            "+GIBRALTAR+"
+           "+HONOLULU+"
            "+LACORUNA+"
            "+LESSABLES+"
            "+LISBON+"
            "+LIZARD-POINT+"
+           "+LOS-ANGELES+"
            "+MARSEILLE+"
            "+NEW-YORK+"
            "+OUESSANT+"
