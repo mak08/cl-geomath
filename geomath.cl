@@ -1,9 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-03-16 22:54:21>
+;;; Last Modified <michael 2020-01-11 00:12:11>
 
-(declaim (optimize (speed 3) (debug 0)  (space 1) (safety 0)))
+(declaim (optimize (speed 3) (debug 1)  (space 1) (safety 1)))
 
 (in-package :cl-geomath)
 

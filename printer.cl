@@ -1,22 +1,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-01-10 20:50:24>
+;;; Last Modified <michael 2020-04-21 23:54:30>
 
 (in-package :cl-geomath)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DMS format:
-;;;     ddd°mm'ss"
+;;;     [-]ddd°mm'ss"
 ;;;
 ;;; Reading fails (and probably produces strange errors) if the coordinate
 ;;; is not in this format.
 
 (defmethod print-object ((thing dms) stream)
-  (format stream  "~3,'0d°~2,'0d'~2,'0d\""
-          (dms-degrees thing)
-          (dms-minutes thing)
-          (round (dms-seconds thing))))
+  (format stream  "~:[-~;~]~3,'0d°~2,'0d'~2,'0d\""
+          (> (dms-u thing) 0.0)
+          (dms-d thing)
+          (dms-m thing)
+          (dms-s thing)))
 
 (defun read-dms (stream)
   (flet ((decode (c0 c1 c2)
@@ -25,13 +26,13 @@
               (- (char-code c2) 48))))
     (let ((chars
            (loop :for k :below 10 :collect (read-char stream t nil nil))))
-      (make-dms :degrees (decode (nth 0 chars) (nth 1 chars) (nth 2 chars)) 
-                :minutes (decode #\0 (nth 4 chars) (nth 5 chars))
-                :seconds (decode #\0 (nth 7 chars) (nth 8 chars))))))
+      (make-dms :d (decode (nth 0 chars) (nth 1 chars) (nth 2 chars)) 
+                :m (decode #\0 (nth 4 chars) (nth 5 chars))
+                :s (decode #\0 (nth 7 chars) (nth 8 chars))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Coordinates format:
-;;;     #p[ddd°mm'ss"X, ddd°mm'ss"Y]
+;;;     #p[dddÂ°mm'ss"X, dddÂ°mm'ss"Y]
 ;;; where X = N|S, Y = E|W
 
 #+()(defmethod print-object ((thing latlng) stream)

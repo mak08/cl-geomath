@@ -1,9 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-03-16 23:02:20>
+;;; Last Modified <michael 2020-01-19 20:44:33>
 
-(declaim (optimize (speed 3) (debug 0)  (space 1) (safety 1)))
+(declaim (optimize (speed 3) (debug 2)  (space 1) (safety 1)))
 
 (in-package :cl-geomath)
 
@@ -65,20 +65,26 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Coordinates
 
-(defstruct dms (degrees 0) (minutes 0) (seconds 0))
+(defstruct dms u d m s cs)
 
-(defun dms2decimal (dms)
-  (+ (dms-degrees dms)
-     (/ (dms-minutes dms) 60)
-     (/ (dms-seconds dms) 3600)))
+(defun decimal-to-dms (deg)
+  (declare (double-float deg))
+  (let* ((u (signum deg))
+         (n (abs deg)))
+    (multiple-value-bind (d rest)
+        (floor n)
+      (multiple-value-bind (m rest)
+          (floor rest 1/60)
+        (multiple-value-bind (s rest)
+            (floor rest 1/3600)
+          (make-dms :u u :d d :m m :s s :cs (* rest 3600))))))) 
 
-(defun decimal2dms (dec)
-  (multiple-value-bind (d r1)
-      (truncate dec)
-    (multiple-value-bind (m r2)
-        (truncate (* r1 60d0))
-      (make-dms :degrees d :minutes m :seconds (* r2 60d0)))))
-
+(defun dms-to-decimal (dms)
+  (* (dms-u dms)
+     (+ (dms-d dms)
+        (/ (dms-m dms) 60)
+        (/ (dms-s dms) 3600)
+        (/ (dms-cs dms) 3600))))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

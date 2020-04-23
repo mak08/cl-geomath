@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2017
-;;; Last Modified <michael 2019-04-01 21:40:31>
+;;; Last Modified <michael 2020-04-21 23:58:58>
 
 (in-package :cl-geomath)
 
@@ -30,6 +30,12 @@
 (defvar +GIBRALTAR+
   (make-latlng :latr% (rad 35.961877d0) :lngr% (rad -5.570280d0)))
 
+(defvar +HONOLULU+
+  (make-latlng :latr% (rad 21.333d0) :lngr% (rad -157.550d0)))
+
+(defvar +JOAO-PESSOA+
+  (make-latlng :latr% (rad -7.174d0) :lngr% (rad -33.600d0)))
+
 (defvar +LACORUNA+
   (make-latlng :latr% (rad 43.484812d0) :lngr% (rad -8.589764d0)))
 
@@ -42,11 +48,8 @@
 (defvar +LIZARD-POINT+
   (make-latlng :latr% (rad 48.37852d0) :lngr% (rad -4.489018d0)))
 
-(defvar +HONOLULU+
-  (make-latlng :latr% (rad 21.333d0) :lngr% (rad -157.550d0)))
-
 (defvar +LOS-ANGELES+
-  (make-latlng :latr% (rad 33.665d0) :lngr% (rad -119.357d0)))
+  (make-latlng :latr% (rad 33.665d0) :lngr% (rad -118.3047d0)))
 
 (defvar +MARSEILLE+
   (make-latlng :latr% (rad 43.2456d0) :lngr% (rad 5.30359d0)))

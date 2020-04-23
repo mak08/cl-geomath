@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-03-16 23:39:37>
+;;; Last Modified <michael 2020-02-04 20:28:53>
 
 (in-package :cl-geomath)
 
@@ -24,6 +24,11 @@
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  bilinear x y v00 v01 v10 v11
+;;;       x  x+1
+;;;  y   00  10
+;;;  y+1 01  11
+
 (check-equal (bilinear 0d0 0d0 1d0 2d0 3d0 4d0)
              1.0d0)
 (check-equal (bilinear 0d0 1d0 1d0 2d0 3d0 4d0)
@@ -100,6 +105,10 @@
 (check-delta-equal
  (course-angle (make-latlng :latr% 0d0 :lngr% 0d0) (make-latlng :latr% (rad 1d0) :lngr% (rad 1d0)))
   44.99563d0)
+
+(check-delta-equal
+ (course-angle (make-latlng :latr% 0d0 :lngr% 0d0) (make-latlng :lat 1d0 :lng 1d0))
+ 44.99563d0)
 
 (check-delta-equal
  (course-angle (make-latlng :latr% 0d0 :lngr% 0d0) (make-latlng :latr% 0d0 :lngr% 1d0))

@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2019-07-16 23:22:50>
+;;; Last Modified <michael 2020-01-19 21:06:58>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI")
@@ -11,6 +11,7 @@
            
            "LATLNG"
            "MAKE-LATLNG"
+           "FORMAT-LATLNG"
            "COPY-LATLNG"
            "LATLNG-LATR"
            "LATLNG-LNGR"
@@ -25,6 +26,9 @@
            "KNOTS-TO-M/S"
            "M/S-TO-KNOTS"
            "M/S-TO-KM/H"
+
+           "DECIMAL-TO-DMS"
+           "DMS-TO-DECIMAL"
            
            "DEG"
            "RAD"
@@ -64,6 +68,7 @@
            "+FREMANTLE+"
            "+GIBRALTAR+"
            "+HONOLULU+"
+           "+JOAO-PESSOA+"
            "+LACORUNA+"
            "+LESSABLES+"
            "+LISBON+"
