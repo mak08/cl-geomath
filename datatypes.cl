@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2019
-;;; Last Modified <michael 2020-01-19 21:10:13>
+;;; Last Modified <michael 2020-06-11 15:21:59>
 
 (declaim (optimize (speed 3) (debug 1)  (space 1) (safety 1)))
 
@@ -20,6 +20,8 @@
 (defun format-latlng (stream ll)
   (let ((lat (latlng-lat ll))
         (lng (latlng-lng ll)))
+    (declare (type latlng ll)
+             (double-float lat lng))
     (format stream "~a~:[N~;S~] ~a~:[E~;W~]"
             (decimal-to-dms (abs lat))
             (<= lat 0d0)

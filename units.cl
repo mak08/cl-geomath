@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-01-19 20:44:33>
+;;; Last Modified <michael 2020-06-10 23:40:33>
 
 (declaim (optimize (speed 3) (debug 2)  (space 1) (safety 1)))
 
@@ -14,6 +14,9 @@
   6371009d0 ; IUGG Mean Radius
   ;; 6218884d0 ; VR
   )
+
+(defconstant +1/radius+
+  (/ 1 6371009d0))
 
 (defconstant +standard-nautical-mile+ 1852.216d0)
 

@@ -1,9 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-01-11 00:12:11>
+;;; Last Modified <michael 2020-06-11 18:00:34>
 
-(declaim (optimize (speed 3) (debug 1)  (space 1) (safety 1)))
+(declaim (optimize (speed 3) (debug 0)  (space 0) (safety 0)))
 
 (in-package :cl-geomath)
 
@@ -11,26 +11,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Converting GRIB U/V values to DEG
 
-(defconstant 180/pi (/ 180d0 pi))
+(declaim (double-float 180/pi))
+(defconstant 180/pi (coerce (/ 180d0 pi) 'double-float))
 
-(declaim (inline angle))
+(declaim (inline angle)
+         (ftype (function (double-float double-float) double-float) angle))
 (defun angle (u v)
-  (declare (double-float u v))
-  (let ((angle
+  (declare (double-float u v 180/pi))
+  (let ((a
          (+ 180d0 (* 180/pi (atan u v)))))
-    (if (< angle 360d0)
-        angle
-        (- angle 360d0))))
-(declaim (notinline angle))
+    (declare (double-float a))
+    (if (< a 360d0) a (- a 360d0))))
+
+;; (declaim (notinline angle))
 
 (declaim (inline angle-r))
 (defun angle-r (u v)
   (declare (double-float u v))
   (let ((angle
          (+ pi (atan u v))))
-    (if (< angle (* 2 pi))
+    (if (< angle (* 2d0 pi))
         angle
-        (- angle (* 2 pi)))))
+        (- angle (* 2d0 pi)))))
 (declaim (notinline angle-r))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -46,6 +48,7 @@
 
 (declaim (inline p2c))
 (defun p2c (a r)
+  (declare (double-float a r))
   (let ((c (cis a)))
     (values 
      (- (* r (imagpart c)))
@@ -77,6 +80,7 @@
 
 (declaim (inline fraction-index))
 (defun fraction-index (value steps)
+  (declare (simple-array steps))
   (loop
      :for step :across steps
      :for index :from 0
@@ -123,9 +127,10 @@
          (lon2 (latlng-lngr target))
          (d (- lon2 lon1)))
     (declare (double-float lat1 lat2 lon1 lon2 d))
-    (acos
-     (+ (* (sin lat1) (sin lat2))
-        (* (cos lat1) (cos lat2) (cos d))))))
+    (the double-float
+         (acos
+          (+ (* (sin lat1) (sin lat2))
+             (* (cos lat1) (cos lat2) (cos d)))))))
 (declaim (notinline gc-angle))
 
 (declaim (inline  gc-angle-hvs))
@@ -156,7 +161,7 @@
   (let ((lat-r (latlng-latr pos))
         (lon-r (latlng-lngr pos)))
     (declare (double-float lat-r lon-r))
-    (let* ((d (/ distance +radius+))
+    (let* ((d (* distance +1/radius+))
            (cis-d (cis d))
            (cos-d (realpart cis-d))
            (sin-d (imagpart cis-d))
@@ -168,8 +173,9 @@
            (lat-new-r (asin (+ (* sin-lat-r cos-d)
                                (* cos-lat-r sin-d (cos a)))))
            (lon-new-r (+ lon-r
-                         (asin (/ (* sin-a sin-d)
-                                  (cos lat-new-r))))))
+                         (the double-float
+                              (asin (/ (* sin-a sin-d)
+                                       (cos lat-new-r)))))))
       (declare (double-float d a cos-d sin-d cos-lat-r sin-lat-r lat-new-r lon-new-r))
       (make-latlng :latr% lat-new-r
                    :lngr% lon-new-r))))
@@ -183,7 +189,7 @@
   (let ((lat-r (latlng-latr pos))
         (lon-r (latlng-lngr pos)))
     (declare (double-float lat-r lon-r))
-    (let* ((d (/ distance +radius+))
+    (let* ((d (* distance +1/radius+))
            (a (rad alpha))
            (d-lat-r (* d (cos a)))
            (d-lon-r (* d (/ (sin a) (cos (+ lat-r d-lat-r))))))
@@ -192,14 +198,17 @@
                    :lngr% (+ lon-r d-lon-r)))))
 (declaim (notinline add-distance-estimate))
 
+(declaim (inline longitudinal-distance))
 (defun longitudinal-distance (latlng1 latlng2)
   (let* ((l1 (latlng-lngr latlng1))
          (l2 (latlng-lngr latlng2))
          (d (abs (- l1 l2))))
-    (declare (double-float l1 l2 d))
+    (declare (double-float l1 l2 d)
+             (ftype (function (double-float) double-float) deg))
     (if (<= d pi)
         (deg d)
         (- 360d0 (deg d)))))
+(declaim (notinline longitudinal-distance))
 
 (declaim (inline  longitudinal-direction))
 (defun longitudinal-direction (start dest)
@@ -226,10 +235,12 @@
          (cis-lat2 (cis lat2))
          (cos-lat2 (realpart cis-lat2))
          (sin-lat2 (imagpart cis-lat2)))
-    (declare (double-float lat1 lon1 lat2 lon2 cos-lat1 sin-lat1 cos-lat2 sin-lat2))
-    (* +radius+
-       (acos (+ (* sin-lat1 sin-lat2)
-                (* cos-lat1 cos-lat2 (cos (- lon2 lon1))))))))
+    (declare (double-float +radius+ lat1 lon1 lat2 lon2 cos-lat1 sin-lat1 cos-lat2 sin-lat2))
+    (* (the double-float +radius+)
+       (the double-float
+            (acos (the double-float
+                       (+ (* sin-lat1 sin-lat2)
+                          (* cos-lat1 cos-lat2 (cos (- lon2 lon1))))))))))
 (declaim (notinline course-distance))
 
 
@@ -321,7 +332,7 @@
       (t
        (when (eql dist 0d0)
          (error "Distance is zero between ~a and ~a" origin target))
-       (let* ((e (/ dist +radius+))
+       (let* ((e (* dist +1/radius+))
               (cos-omega
                (/ (- (sin lat2) (* sin-lat1 (cos e)))
                   (* cos-lat1 (sin e))))
@@ -336,7 +347,6 @@
                     omega
                     (- (* PI 2d0) omega))))))))))
 (declaim (notinline course-angle-d))
-
 
 #|
 (let ((omega%
@@ -354,13 +364,15 @@
       (and (<= east west)
            (not (<= east longitude west)))))
 
+(declaim (inline heading-between))
 (defun heading-between (left right heading)
+  (declare (double-float left right heading))
   (cond ((<= left right)
          (<= left heading right))
         (t
          (or
-          (<= left heading 360)
-          (<= 0 heading right)))))
+          (<= left heading 360d0)
+          (<= 0d0 heading right)))))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
