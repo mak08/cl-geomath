@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-06-11 18:00:34>
+;;; Last Modified <michael 2020-10-30 19:46:13>
 
 (declaim (optimize (speed 3) (debug 0)  (space 0) (safety 0)))
 
@@ -33,7 +33,7 @@
     (if (< angle (* 2d0 pi))
         angle
         (- angle (* 2d0 pi)))))
-(declaim (notinline angle-r))
+;; (declaim (notinline angle-r))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Euclidian Norm
@@ -41,7 +41,7 @@
 (defun enorm (x y)
   (declare (double-float x y))
   (sqrt (+ (* x x) (* y y))))
-(declaim (notinline enorm))
+;; (declaim (notinline enorm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Polar to Cartesian
@@ -53,7 +53,7 @@
     (values 
      (- (* r (imagpart c)))
      (- (* r (realpart c))))))
-(declaim (notinline p2c))
+;; (declaim (notinline p2c))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Interpolation
@@ -62,7 +62,7 @@
 (defun linear (fraction a b)
   (declare (double-float fraction a b))
   (+ a (* fraction (- b a))))
-(declaim (notinline linear))
+;; (declaim (notinline linear))
 
 (declaim (inline bilinear))
 (defun bilinear (u v w00 w01 w10 w11)
@@ -76,7 +76,7 @@
           (+ w0 (* v (- w1 w0)))))
     (declare (double-float w0 w1 w))
     w))
-(declaim (notinline bilinear))
+;; (declaim (notinline bilinear))
 
 (declaim (inline fraction-index))
 (defun fraction-index (value steps)
@@ -89,7 +89,7 @@
      :finally (return (values (1- index)
                               (/ (- value (aref steps (1- index)))
                                  (- step (aref steps (1- index))))))))
-(declaim (notinline fraction-index))
+;; (declaim (notinline fraction-index))
 
 (declaim (inline bilinear-unit))
 (defun bilinear-unit (x y f00 f01 f10 f11)
@@ -98,7 +98,7 @@
      (* f01 (- 1d0 x) y)
      (* f10 x (- 1d0 y))
      (* f11 x y)))
-(declaim (notinline bilinear-unit))
+;; (declaim (notinline bilinear-unit))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 
@@ -131,7 +131,7 @@
          (acos
           (+ (* (sin lat1) (sin lat2))
              (* (cos lat1) (cos lat2) (cos d)))))))
-(declaim (notinline gc-angle))
+;; (declaim (notinline gc-angle))
 
 (declaim (inline  gc-angle-hvs))
 (defun gc-angle-hvs (origin target)
@@ -148,12 +148,12 @@
                (* sinx sinx))))
       (declare (inline sin2))
       (* 2 (asin (sqrt (+ (sin2 dlat/2) (* (cos lat1) (cos lat2) (sin2 dlon/2)))))))))
-(declaim (notinline gc-angle-hvs))
+;; (declaim (notinline gc-angle-hvs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Spherical distance
 
-(declaim (inline add-distance-exact add-distance-estimate))
+(declaim (inline add-distance-exact))
 (defun add-distance-exact (pos distance alpha)
   ;; Exact calculation on the spherical Earth
   (declare (double-float distance alpha)
@@ -179,7 +179,7 @@
       (declare (double-float d a cos-d sin-d cos-lat-r sin-lat-r lat-new-r lon-new-r))
       (make-latlng :latr% lat-new-r
                    :lngr% lon-new-r))))
-(declaim (notinline add-distance-exact))
+;; (declaim (notinline add-distance-exact))
 
 (declaim (inline add-distance-estimate))
 (defun add-distance-estimate (pos distance alpha)
@@ -196,7 +196,7 @@
       (declare (double-float a))
       (make-latlng :latr% (+ lat-r d-lat-r)
                    :lngr% (+ lon-r d-lon-r)))))
-(declaim (notinline add-distance-estimate))
+;; (declaim (notinline add-distance-estimate))
 
 (declaim (inline longitudinal-distance))
 (defun longitudinal-distance (latlng1 latlng2)
@@ -208,7 +208,7 @@
     (if (<= d pi)
         (deg d)
         (- 360d0 (deg d)))))
-(declaim (notinline longitudinal-distance))
+;; (declaim (notinline longitudinal-distance))
 
 (declaim (inline  longitudinal-direction))
 (defun longitudinal-direction (start dest)
@@ -220,7 +220,7 @@
     (if (<= delta pi)
         (if (<= sign 0) 1d0 -1d0)
         (if (<= sign 0) -1d0 1d0))))
-(declaim (notinline  longitudinal-direction))
+;; (declaim (notinline  longitudinal-direction))
 
 (declaim (inline course-distance))
 (defun course-distance (origin target)
@@ -241,7 +241,7 @@
             (acos (the double-float
                        (+ (* sin-lat1 sin-lat2)
                           (* cos-lat1 cos-lat2 (cos (- lon2 lon1))))))))))
-(declaim (notinline course-distance))
+;; (declaim (notinline course-distance))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -259,7 +259,7 @@
       (if (< value 0d0)
           (+ value 360d0)
           value)))
-(declaim (notinline normalize-heading))
+;; (declaim (notinline normalize-heading))
 
 (declaim (inline normalize-angle))
 (defun normalize-angle (value)
@@ -269,7 +269,7 @@
       (if (> value 180d0)
           (the double-float (- value 360d0))
           value)))
-(declaim (notinline normalize-angle))
+;; (declaim (notinline normalize-angle))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Course angle
@@ -309,7 +309,7 @@
            (if (= ld 1)
                omega
                (- (* PI 2) omega)))))))))
-(declaim (notinline course-angle))
+;; (declaim (notinline course-angle))
 
 (declaim (inline course-angle-d))
 (defun course-angle-d (origin target &optional (dist (course-distance origin target)))
@@ -346,7 +346,7 @@
                 (if (= ld 1d0)
                     omega
                     (- (* PI 2d0) omega))))))))))
-(declaim (notinline course-angle-d))
+;; (declaim (notinline course-angle-d))
 
 #|
 (let ((omega%
@@ -355,6 +355,50 @@
       (realpart omega%)
       omega%))
 |#
+
+;; Test if line segment (p1, p2) and (q1, q2) intersect.
+;; Consider parallel lines non-intersecting even if they coincide.
+;; https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+(declaim (inline segment-intersects))
+(defun segment-intersects (p1 p2 q1 q2)
+  (let ((x1 (latlng-lngr p1))
+        (y1 (latlng-latr p1))
+        (x2 (latlng-lngr p2))
+        (y2 (latlng-latr p2))
+        (x3 (latlng-lngr q1))
+        (y3 (latlng-latr q1))
+        (x4 (latlng-lngr q2))
+        (y4 (latlng-latr q2)))
+    (declare (double-float x1 x2 x3 x4 y1 y2 y3 y4))
+    (let* ((dx12 (- x1 x2))
+           (dx13 (- x1 x3))
+           (dx34 (- x3 x4))
+           (dy12 (- y1 y2))
+           (dy13 (- y1 y3))
+           (dy34 (- y3 y4))
+           (px12y34 (* dx12 dy34))
+           (px12y13 (* dx12 dy13))
+           (px13y34 (* dx13 dy34))
+           (py12x34 (* dy12 dx34))
+           (py12x13 (* dy12 dx13))
+           (py13x34 (* dy13 dx34))
+           (denom
+            (- px12y34 py12x34))
+           (nom-t
+            (- px13y34 py13x34))
+           (nom-u
+            (- px12y13 py12x13)))
+      (declare (double-float dx12 dx13 dx34 dy12 dy13 dy34
+                             px12y34 px12y13 px13y34
+                             py12x34 py12x13 py13x34))
+      (or 
+          (and (> denom 0)
+               (< 0 nom-t denom)
+               (> 0 nom-u (- denom)))
+          (and (< denom 0)
+               (< denom nom-t 0)
+               (< 0 nom-u (- denom)))))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 
