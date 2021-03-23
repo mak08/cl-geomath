@@ -1,22 +1,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-10-30 19:46:13>
-
-(declaim (optimize (speed 3) (debug 0)  (space 0) (safety 0)))
+;;; Last Modified <michael 2021-03-23 00:21:08>
 
 (in-package :cl-geomath)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Converting GRIB U/V values to DEG
 
-(declaim (double-float 180/pi))
+(declaim (float 180/pi))
 (defconstant 180/pi (coerce (/ 180d0 pi) 'double-float))
+(defconstant pi/2 (coerce (/  pi 2d0) 'double-float))
+(defconstant 2pi (coerce (*  pi 2d0) 'double-float))
 
 (declaim (inline angle)
          (ftype (function (double-float double-float) double-float) angle))
-(defun angle (u v)
+(defun-t angle double-float ((u double-float) (v double-float))
   (declare (double-float u v 180/pi))
   (let ((a
          (+ 180d0 (* 180/pi (atan u v)))))
@@ -38,9 +37,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Euclidian Norm
 (declaim (inline enorm))
-(defun enorm (x y)
-  (declare (double-float x y))
-  (sqrt (+ (* x x) (* y y))))
+(defun-t enorm double-float ((x double-float) (y double-float))
+  (sqrt  (+ (* x x)
+            (* y y))))
+
 ;; (declaim (notinline enorm))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -49,7 +49,7 @@
 (declaim (inline p2c))
 (defun p2c (a r)
   (declare (double-float a r))
-  (let ((c (cis a)))
+  (let ((c (the complex (cis a))))
     (values 
      (- (* r (imagpart c)))
      (- (* r (realpart c))))))
@@ -59,27 +59,31 @@
 ;;; Interpolation
 
 (declaim (inline linear))
-(defun linear (fraction a b)
-  (declare (double-float fraction a b))
+(defun-t linear double-float ((fraction double-float)
+                              (a double-float)
+                              (b double-float))
   (+ a (* fraction (- b a))))
 ;; (declaim (notinline linear))
 
 (declaim (inline bilinear))
-(defun bilinear (u v w00 w01 w10 w11)
+(defun-t bilinear double-float ((u   double-float) 
+                                (v  double-float)
+                                (w00    double-float)
+                                (w01    double-float)
+                                (w10    double-float)
+                                (w11 double-float))
   "Bilinear interpolation at point (u v) given values  w_ik = f(u_i, v_k)"
-  (declare (double-float u v w00 w01 w10 w11))
   (let* ((w0
           (+ w00 (* u (- w10 w00))))
          (w1
           (+ w01 (* u (- w11 w01))))
          (w
           (+ w0 (* v (- w1 w0)))))
-    (declare (double-float w0 w1 w))
     w))
 ;; (declaim (notinline bilinear))
 
 (declaim (inline fraction-index))
-(defun fraction-index (value steps)
+(defun-t fraction-index (values fixnum float) ((value double-float) (steps t))
   (declare (simple-array steps))
   (loop
      :for step :across steps
@@ -92,8 +96,7 @@
 ;; (declaim (notinline fraction-index))
 
 (declaim (inline bilinear-unit))
-(defun bilinear-unit (x y f00 f01 f10 f11)
-  (declare (double-float x y f00 f01 f10 f11))
+(defun-t bilinear-unit double-float ((x  double-float) (y double-float) (f00  double-float) (f01  double-float) (f10  double-float) (f11  double-float))
   (+ (* f00 (- 1d0 x) (- 1d0 y))
      (* f01 (- 1d0 x) y)
      (* f10 x (- 1d0 y))
@@ -119,7 +122,7 @@
 ;;; Great circle angle
 
 (declaim (inline gc-angle))
-(defun gc-angle (origin target)
+(defun-t gc-angle double-float ((origin latlng) (target latlng))
   "Compute great circle angle between origin and target"
   (let* ((lat1 (latlng-latr origin))
          (lat2 (latlng-latr target))
@@ -134,7 +137,7 @@
 ;; (declaim (notinline gc-angle))
 
 (declaim (inline  gc-angle-hvs))
-(defun gc-angle-hvs (origin target)
+(defun-t gc-angle-hvs double-float ((origin latlng) (target latlng))
   "Compute great circle angle using the haversine formula"
   (let* ((lat1 (latlng-latr origin))
          (lat2 (latlng-latr target))
@@ -147,7 +150,15 @@
              (let ((sinx (sin x)))
                (* sinx sinx))))
       (declare (inline sin2))
-      (* 2 (asin (sqrt (+ (sin2 dlat/2) (* (cos lat1) (cos lat2) (sin2 dlon/2)))))))))
+      (* 2d0 (the double-float
+                  (asin
+                   (the double-float
+                        (sqrt (the (double-float 0d0)
+                                   (+
+                                    (sin2 dlat/2)
+                                    (* (cos lat1)
+                                       (cos lat2)
+                                       (sin2 dlon/2))))))))))))
 ;; (declaim (notinline gc-angle-hvs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -204,7 +215,7 @@
          (l2 (latlng-lngr latlng2))
          (d (abs (- l1 l2))))
     (declare (double-float l1 l2 d)
-             (ftype (function (double-float) double-float) deg))
+             (ftype (function (float) double-float) deg))
     (if (<= d pi)
         (deg d)
         (- 360d0 (deg d)))))
@@ -249,7 +260,7 @@
 ;;; - ANGLE  values range from -179..180 (starboard downwind to port downwind)  
 
 (deftype heading () `(integer 0 360))
-(deftype angle () `(double-float -179.99999999d0 180.0d0))
+(deftype angle () `(float -179.99999999d0 180.0d0))
 
 (declaim (inline normalize-heading))
 (defun normalize-heading (value)
@@ -262,6 +273,7 @@
 ;; (declaim (notinline normalize-heading))
 
 (declaim (inline normalize-angle))
+(declaim (ftype (function (double-float) double-float) normalize-angle))
 (defun normalize-angle (value)
   (declare (double-float value))
   (if (<= value -180d0)
@@ -297,11 +309,9 @@
                (/ (- (sin lat2) (* sin-lat1 (cos xi)))
                   (* cos-lat1 (sin xi))))
               (omega
-               (let ((omega%
-                      (acos cos-omega)))
-                 (if (complexp omega%)
-                     (realpart omega%)
-                     omega%)))
+                (acos
+                 (min 1.0d0
+                      (max -1.0d0 cos-omega))))
               (ld (longitudinal-direction origin target)))
          (declare (double-float cos-omega omega))
          (normalize-angle
@@ -337,7 +347,9 @@
                (/ (- (sin lat2) (* sin-lat1 (cos e)))
                   (* cos-lat1 (sin e))))
               (omega
-               (acos (min 1.0d0 (max -1.0d0 cos-omega))))
+                (acos
+                 (min 1.0d0
+                      (max -1.0d0 cos-omega))))
               (ld (longitudinal-direction origin target)))
          (declare (double-float cos-omega omega ld))
          (normalize-angle
@@ -370,6 +382,13 @@
         (x4 (latlng-lngr q2))
         (y4 (latlng-latr q2)))
     (declare (double-float x1 x2 x3 x4 y1 y2 y3 y4))
+    ;; (when (< x1 0d0) (incf x1 2pi)) (when (< x2 0d0) (incf x2 2pi)) (when (< x3 0d0) (incf x3 2pi)) (when (< x4 0d0) (incf x4 2pi))
+    (when (or (> (abs (- x2 x1)) pi)
+              (> (abs (- x3 x4)) pi))
+      (when (< x1 (- pi/2)) (incf x1 2pi))
+      (when (< x2 (- pi/2)) (incf x2 2pi))
+      (when (< x3 (- pi/2)) (incf x3 2pi))
+      (when (< x4 (- pi/2)) (incf x4 2pi)))
     (let* ((dx12 (- x1 x2))
            (dx13 (- x1 x3))
            (dx34 (- x3 x4))
@@ -388,6 +407,7 @@
             (- px13y34 py13x34))
            (nom-u
             (- px12y13 py12x13)))
+
       (declare (double-float dx12 dx13 dx34 dy12 dy13 dy34
                              px12y34 px12y13 px13y34
                              py12x34 py12x13 py13x34))
@@ -399,11 +419,11 @@
                (< denom nom-t 0)
                (< 0 nom-u (- denom)))))))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 
 
 (defun longitude-between (west east longitude)
+  (declare (double-float west east longitude))
   (or (<= west longitude  east)
       (and (<= east west)
            (not (<= east longitude west)))))

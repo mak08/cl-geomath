@@ -1,9 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-06-10 23:40:33>
-
-(declaim (optimize (speed 3) (debug 2)  (space 1) (safety 1)))
+;;; Last Modified <michael 2021-03-21 20:36:42>
 
 (in-package :cl-geomath)
 
@@ -53,22 +51,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Trigonometric units
 
+(defconstant +1/360+ (/ 1 360d0))
+(defconstant +1/PI+ (/ 1 PI))
+
 (declaim (inline rad))
 (defun rad (x)
   (declare (double-float x))
-  (* (* 2d0 pi) (/ x 360d0)))
-(declaim (notinline rad))
+  (* (* 2d0 pi) (* x +1/360+)))
 
 (declaim (inline deg))
 (defun deg (x)
   (declare (double-float x))
-  (* 360d0 (/ x (* 2d0 pi))))
-(declaim (notinline deg))
+  (* 180d0 (* x +1/pi+)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Coordinates
 
-(defstruct dms u d m s cs)
+(defstruct dms (u 1) d m s (cs 0d0))
 
 (defun decimal-to-dms (deg)
   (declare (double-float deg))

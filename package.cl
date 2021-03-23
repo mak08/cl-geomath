@@ -1,10 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-10-30 19:28:48>
+;;; Last Modified <michael 2021-03-22 23:26:53>
 
 (defpackage "CL-GEOMATH"
-  (:use "COMMON-LISP" "CFFI")
+  (:use "COMMON-LISP" "CFFI" "MACROS")
   (:export "+RADIUS+"
            "+NAUTICAL-MILE+"
            "+STANDARD-NAUTICAL-MILE+"
@@ -27,6 +27,7 @@
            "M/S-TO-KNOTS"
            "M/S-TO-KM/H"
 
+           "MAKE-DMS"
            "DECIMAL-TO-DMS"
            "DMS-TO-DECIMAL"
            

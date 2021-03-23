@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-04-21 23:54:30>
+;;; Last Modified <michael 2020-12-13 22:22:45>
 
 (in-package :cl-geomath)
 
@@ -61,7 +61,7 @@
     (declare (ignore open-bracket comma space close-bracket))
     (let ((lat-sign (ecase lat-marker (#\N 1) (#\S -1)))
           (lng-sign (ecase lng-marker (#\E 1) (#\W -1))))
-      (make-latlng :latr% (rad (* lat-sign (dms2decimal latitude)))
-                   :lngr% (rad (* lng-sign (dms2decimal longitude)))))))
+      (make-latlng :latr% (rad (* lat-sign (dms-to-decimal latitude)))
+                   :lngr% (rad (* lng-sign (dms-to-decimal longitude)))))))
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
