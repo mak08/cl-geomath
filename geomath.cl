@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-03-23 00:21:08>
+;;; Last Modified <michael 2021-04-06 18:29:39>
 
 (in-package :cl-geomath)
 
@@ -263,14 +263,12 @@
 (deftype angle () `(float -179.99999999d0 180.0d0))
 
 (declaim (inline normalize-heading))
-(defun normalize-heading (value)
-  (declare (double-float value))
+(defun-t normalize-heading double-float ((value double-float))
   (if (> value 360d0)
       (- value 360d0)
       (if (< value 0d0)
           (+ value 360d0)
           value)))
-;; (declaim (notinline normalize-heading))
 
 (declaim (inline normalize-angle))
 (declaim (ftype (function (double-float) double-float) normalize-angle))
