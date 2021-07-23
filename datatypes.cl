@@ -1,9 +1,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2019
-;;; Last Modified <michael 2021-03-21 13:22:24>
+;;; Last Modified <michael 2021-07-23 21:43:46>
 
 (in-package :cl-geomath)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Trigonometric units
+
+(defconstant +1/360+ (/ 1 360d0))
+(defconstant +1/PI+ (/ 1 PI))
+
+(declaim (inline rad))
+(defun rad (x)
+  (declare (double-float x))
+  (* (* 2d0 pi) (* x +1/360+)))
+
+(declaim (inline deg))
+(defun deg (x)
+  (declare (double-float x))
+  (* 180d0 (* x +1/pi+)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Datatypes
 
 (deftype rad-angle () (list 'double-float (- (* 2 pi)) (* 2 pi)))
 (deftype latlng () (list 'simple-array 'rad-angle 1))

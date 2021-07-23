@@ -1,9 +1,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-12-16 01:47:06>
+;;; Last Modified <michael 2021-07-22 23:17:16>
 
 (in-package :cl-geomath)
+
+(CL-GEOMATH:ADD-DISTANCE-ESTIMATE (make-latlng :latr% 1.57059d0 :lngr% -2d0) 1440d0 24.0d0)
+(CL-GEOMATH:ADD-DISTANCE-EXACT (make-latlng :latr% 1.57059d0 :lngr% -2d0) 1440d0 24.0d0)
+
+(CL-GEOMATH:ADD-DISTANCE-ESTIMATE (make-latlng :latr% 1.5705d0 :lngr% -2d0) 1440d0 23.0d0)
+(CL-GEOMATH:ADD-DISTANCE-EXACT (make-latlng :latr% 1.5705d0 :lngr% -2d0) 1440d0 23.0d0)
+
+(CL-GEOMATH:ADD-DISTANCE-ESTIMATE (make-latlng :latr% 1.570d0 :lngr% -2d0) 1440d0 23.0d0)
+(CL-GEOMATH:ADD-DISTANCE-EXACT (make-latlng :latr% 1.570d0 :lngr% -2d0) 1440d0 23.0d0)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

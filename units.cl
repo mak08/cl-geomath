@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-03-21 20:36:42>
+;;; Last Modified <michael 2021-07-23 21:43:04>
 
 (in-package :cl-geomath)
 
@@ -27,9 +27,11 @@
   (/ pi 180d0))
 
 (defconstant +deg-length+
-  (/ (* 2 pi +radius+) 360d0)
+  (rad +radius+)
   "Distance of 1° at the equator")
 
+(defconstant +latitude-distance+
+  (rad +radius+))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unit conversion
@@ -48,22 +50,6 @@
 (defun m/s-to-kM/h (m/s)
   (* m/s 3.6))
  
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Trigonometric units
-
-(defconstant +1/360+ (/ 1 360d0))
-(defconstant +1/PI+ (/ 1 PI))
-
-(declaim (inline rad))
-(defun rad (x)
-  (declare (double-float x))
-  (* (* 2d0 pi) (* x +1/360+)))
-
-(declaim (inline deg))
-(defun deg (x)
-  (declare (double-float x))
-  (* 180d0 (* x +1/pi+)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Coordinates
 

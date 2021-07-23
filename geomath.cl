@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-04-06 18:29:39>
+;;; Last Modified <michael 2021-07-23 15:21:23>
 
 (in-package :cl-geomath)
 
@@ -36,6 +36,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Euclidian Norm
+
 (declaim (inline enorm))
 (defun-t enorm double-float ((x double-float) (y double-float))
   (sqrt  (+ (* x x)
@@ -203,8 +204,11 @@
     (let* ((d (* distance +1/radius+))
            (a (rad alpha))
            (d-lat-r (* d (cos a)))
-           (d-lon-r (* d (/ (sin a) (cos (+ lat-r d-lat-r))))))
+           (s-lat-r  (+ lat-r d-lat-r))
+           (cos-s-lat-r (cos s-lat-r))
+           (d-lon-r (* d (/ (sin a) cos-s-lat-r))))
       (declare (double-float a))
+      ;; (format t "d= ~a a=~a d-lat-r=~a s-lat-r=~a cos-s-lat-r=~a d-lon-r=~a ~%" d a d-lat-r s-lat-r cos-s-lat-r d-lon-r)
       (make-latlng :latr% (+ lat-r d-lat-r)
                    :lngr% (+ lon-r d-lon-r)))))
 ;; (declaim (notinline add-distance-estimate))
@@ -301,7 +305,9 @@
       ((and
         (eql lat1 lat2)
         (eql lon1 lon2))
-       (error "Distance is zero between ~a and ~a" origin target))
+       (error "Distance is zero between ~a and ~a"
+              (format-latlng nil origin)
+              (format-latlng nil target)))
       (t
        (let* ((cos-omega
                (/ (- (sin lat2) (* sin-lat1 (cos xi)))

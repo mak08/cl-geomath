@@ -1,18 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2019
-;;; Last Modified <michael 2021-03-21 17:59:41>
+;;; Last Modified <michael 2021-07-23 21:39:05>
 
 (in-package :cl-geomath)
-
-
-(defconstant +latitude-distance+
-   +radius+)
-
-(defconstant +radius+
-  6371009d0 ; IUGG Mean Radius
-  ;; 6218884d0 ; VR
-  )
 
 (declaim (inline longitude-distance))
 (defun longitude-distance (latitude)
@@ -26,12 +17,17 @@
            (type latlng origin target)
            (ftype (function (latlng) double-float)  latlng-latr latlng-lngr)
            (ftype (function (float) double-float) longitude-distance))
-  (let ((dlat (- (latlng-latr target) (latlng-latr origin)))
-        (dlng (- (latlng-lngr target) (latlng-lngr origin))))
-    (declare (double-float dlat dlng)
-             (inline enorm longitude-distance))
-    (enorm (* dlng (* +latitude-distance+  (latlng-latr origin)))
-           (* dlat +latitude-distance+))))
+  (let* ((lat0 (latlng-latr origin))
+         (lon0 (latlng-lngr origin))
+         (lat1 (latlng-latr target))
+         (lon1 (latlng-lngr target))
+         (delta-lat (- lat1 lat0))
+         (delta-lon (- lon1 lon0))
+         (dist-lat (* (deg delta-lat) +latitude-distance+))
+         (dist-lon (* (deg delta-lon) (/ (+ (longitude-distance lat0)
+                                            (longitude-distance lat1))
+                                         2))))
+    (enorm dist-lat dist-lon)))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
