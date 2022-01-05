@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-07-23 15:21:23>
+;;; Last Modified <michael 2022-01-05 23:05:29>
 
 (in-package :cl-geomath)
 
@@ -235,7 +235,7 @@
     (if (<= delta pi)
         (if (<= sign 0) 1d0 -1d0)
         (if (<= sign 0) -1d0 1d0))))
-;; (declaim (notinline  longitudinal-direction))
+;; (declaim (notinline longitudinal-direction))
 
 (declaim (inline course-distance))
 (defun course-distance (origin target)
