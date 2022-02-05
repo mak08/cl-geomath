@@ -1,14 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2022-01-05 23:05:29>
+;;; Last Modified <michael 2022-02-02 22:54:25>
 
 (in-package :cl-geomath)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Converting GRIB U/V values to DEG
 
-(declaim (float 180/pi))
 (defconstant 180/pi (coerce (/ 180d0 pi) 'double-float))
 (defconstant pi/2 (coerce (/  pi 2d0) 'double-float))
 (defconstant 2pi (coerce (*  pi 2d0) 'double-float))
@@ -189,6 +188,8 @@
                               (asin (/ (* sin-a sin-d)
                                        (cos lat-new-r)))))))
       (declare (double-float d a cos-d sin-d cos-lat-r sin-lat-r lat-new-r lon-new-r))
+      (when (>= lon-new-r pi)
+        (decf lon-new-r 2pi))
       (make-latlng :latr% lat-new-r
                    :lngr% lon-new-r))))
 ;; (declaim (notinline add-distance-exact))

@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-07-22 23:17:16>
+;;; Last Modified <michael 2022-01-31 23:34:21>
 
 (in-package :cl-geomath)
 
@@ -331,6 +331,160 @@
   (loop
      :for k :from 1 :below (length *limits*)
      :never (segment-intersects p0 p1 (aref *limits* (1- k)) (aref *limits* k))))
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 0d0 :lng 0d0)
+           #.(make-latlng :lat 1d0 :lng 0d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 0d0 :lng 1d0)
+           #.(make-latlng :lat 0d0 :lng 0d0)))
+       (point #.(make-latlng :lat 0.1d0 :lng 0.5d0)))
+   (point-in-poly-p point poly))
+ T)
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 0d0 :lng 0d0)
+           #.(make-latlng :lat 10d0 :lng 0d0)
+           #.(make-latlng :lat 10d0 :lng 10d0)
+           #.(make-latlng :lat 4d0 :lng 4d0)
+           #.(make-latlng :lat 0d0 :lng 10d0)
+           #.(make-latlng :lat 0d0 :lng 0d0)))
+       (point #.(make-latlng :lat 4d0 :lng 4d0)))
+   (point-in-poly-p point poly))
+ T)
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 0d0 :lng 0d0)
+           #.(make-latlng :lat 10d0 :lng 0d0)
+           #.(make-latlng :lat 10d0 :lng 10d0)
+           #.(make-latlng :lat 4d0 :lng 4d0)
+           #.(make-latlng :lat 0d0 :lng 10d0)
+           #.(make-latlng :lat 0d0 :lng 0d0)))
+       (point #.(make-latlng :lat 4d0 :lng 6d0)))
+   (point-in-poly-p point poly))
+ nil)
+
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 2d0 :lng 2d0)
+           #.(make-latlng :lat 0d0 :lng 2d0)
+           #.(make-latlng :lat 0d0 :lng -2d0)
+           #.(make-latlng :lat 2d0 :lng -2d0)
+           #.(make-latlng :lat 2d0 :lng -1d0)
+           #.(make-latlng :lat 1d0 :lng -1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 2d0 :lng 1d0)
+           #.(make-latlng :lat 2d0 :lng 2d0)))
+       (point #.(make-latlng :lat 1.5d0 :lng 0d0)))
+   (point-in-poly-p point poly))
+ nil)
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 2d0 :lng 2d0)
+           #.(make-latlng :lat 0d0 :lng 2d0)
+           #.(make-latlng :lat 0d0 :lng -2d0)
+           #.(make-latlng :lat 2d0 :lng -2d0)
+           #.(make-latlng :lat 2d0 :lng -1d0)
+           #.(make-latlng :lat 1d0 :lng -1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 2d0 :lng 1d0)
+           #.(make-latlng :lat 2d0 :lng 2d0)))
+       (point #.(make-latlng :lat 0.5d0 :lng 0d0)))
+   (point-in-poly-p point poly))
+ t)
+
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 3d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng -1d0)
+           #.(make-latlng :lat 3d0 :lng -1d0)
+           #.(make-latlng :lat 3d0 :lng 1d0)))
+       (point #.(make-latlng :lat 1.9d0 :lng 1.1d0)))
+   (point-in-poly-p point poly))
+ nil)
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 3d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 0d0)
+           #.(make-latlng :lat 3d0 :lng 0d0)
+           #.(make-latlng :lat 3d0 :lng 1d0)))
+       (point #.(make-latlng :lat 3d0 :lng 3d0)))
+   (point-in-poly-p point poly))
+ nil)
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 3d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 0d0)
+           #.(make-latlng :lat 3d0 :lng 0d0)
+           #.(make-latlng :lat 3d0 :lng 1d0)))
+       (point #.(make-latlng :lat 3d0 :lng 1d0)))
+   (point-in-poly-p point poly))
+ t)
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 3d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 3d0)
+           #.(make-latlng :lat 0d0 :lng 0d0)
+           #.(make-latlng :lat 3d0 :lng 0d0)
+           #.(make-latlng :lat 3d0 :lng 1d0)))
+       (point #.(make-latlng :lat 1d0 :lng 1d0)))
+   (point-in-poly-p point poly))
+ t)
+
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 2d0 :lng 2d0)
+           #.(make-latlng :lat 0d0 :lng 2d0)
+           #.(make-latlng :lat 0d0 :lng -2d0)
+           #.(make-latlng :lat 3d0 :lng -2d0)
+           #.(make-latlng :lat 3d0 :lng 0d0)
+           #.(make-latlng :lat 1d0 :lng -1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 2d0 :lng 0d0)
+           #.(make-latlng :lat 2d0 :lng 2d0)))
+       (point #.(make-latlng :lat 1.5d0 :lng -0.5d0)))
+   (point-in-poly-p point poly))
+ nil)
+
+
+(check-equal
+ (let ((poly
+         #(#.(make-latlng :lat 3d0 :lng -1d0)
+           #.(make-latlng :lat 3d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 1d0)
+           #.(make-latlng :lat 1d0 :lng 3d0)
+           #.(make-latlng :lat 3d0 :lng 3d0)
+           #.(make-latlng :lat 3d0 :lng 4d0)
+           #.(make-latlng :lat 0d0 :lng 4d0)
+           #.(make-latlng :lat 0d0 :lng -1d0)
+           #.(make-latlng :lat 3d0 :lng -1d0)))
+       (point #.(make-latlng :lat 2d0 :lng 2d0)))
+   (point-in-poly-p point poly))
+ nil)
+
+
+
 
 
 ;;; EOF

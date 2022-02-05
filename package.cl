@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-03-22 23:26:53>
+;;; Last Modified <michael 2022-01-30 00:38:32>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI" "MACROS")
@@ -50,6 +50,8 @@
            
            "BILINEAR"
            "LINEAR"
+
+           "POINT-IN-POLY-P"
 
            "GC-ANGLE"
            "GC-DISTANCE"
