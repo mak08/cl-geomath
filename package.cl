@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2022-01-30 00:38:32>
+;;; Last Modified <michael 2022-03-03 23:24:38>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI" "MACROS")
@@ -19,6 +19,7 @@
            "LATLNG-LNG"
 
            "LONGITUDE-BETWEEN"
+           "LONGITUDINAL-DIRECTION"
            "HEADING-BETWEEN"
 
            "ROUND-TO-DIGITS"
