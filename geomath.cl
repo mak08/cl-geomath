@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2022-02-02 22:54:25>
+;;; Last Modified <michael 2022-03-14 20:38:40>
 
 (in-package :cl-geomath)
 
@@ -20,7 +20,6 @@
          (+ 180d0 (* 180/pi (atan u v)))))
     (declare (double-float a))
     (if (< a 360d0) a (- a 360d0))))
-
 ;; (declaim (notinline angle))
 
 (declaim (inline angle-r))
@@ -190,6 +189,8 @@
       (declare (double-float d a cos-d sin-d cos-lat-r sin-lat-r lat-new-r lon-new-r))
       (when (>= lon-new-r pi)
         (decf lon-new-r 2pi))
+      (when (<= lon-new-r (- pi))
+        (incf lon-new-r 2pi))
       (make-latlng :latr% lat-new-r
                    :lngr% lon-new-r))))
 ;; (declaim (notinline add-distance-exact))
@@ -343,18 +344,17 @@
       ((and
         (eql lat1 lat2)
         (eql lon1 lon2))
-       (error "Distance is zero between ~a and ~a" origin target))
+       (error "Identical points ~a and ~a" origin target))
       (t
        (when (eql dist 0d0)
-         (error "Distance is zero between ~a and ~a" origin target))
+         (error "Identical points ~a and ~a" origin target))
        (let* ((e (* dist +1/radius+))
               (cos-omega
                (/ (- (sin lat2) (* sin-lat1 (cos e)))
                   (* cos-lat1 (sin e))))
               (omega
                 (acos
-                 (min 1.0d0
-                      (max -1.0d0 cos-omega))))
+                 (min 1.0d0 (max -1.0d0 cos-omega))))
               (ld (longitudinal-direction origin target)))
          (declare (double-float cos-omega omega ld))
          (normalize-angle
