@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2021-07-23 21:43:04>
+;;; Last Modified <michael 2022-03-21 23:20:22>
 
 (in-package :cl-geomath)
 
@@ -55,7 +55,7 @@
 
 (defstruct dms (u 1) d m s (cs 0d0))
 
-(defun decimal-to-dms (deg)
+(defun-t decimal-to-dms t ((deg double-float))
   (declare (double-float deg))
   (let* ((u (signum deg))
          (n (abs deg)))
@@ -67,7 +67,7 @@
             (floor rest 1/3600)
           (make-dms :u u :d d :m m :s s :cs (* rest 3600))))))) 
 
-(defun dms-to-decimal (dms)
+(defun-t dms-to-decimal double-float (dms)
   (* (dms-u dms)
      (+ (dms-d dms)
         (/ (dms-m dms) 60)
