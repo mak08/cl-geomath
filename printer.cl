@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2020-12-13 22:22:45>
+;;; Last Modified <michael 2023-02-19 21:47:16>
 
 (in-package :cl-geomath)
 
@@ -53,7 +53,6 @@
   (let ((open-bracket (read-char stream))
         (latitude (read-dms stream))
         (lat-marker (read-char stream))
-        (comma (read-char stream))
         (space (read-char stream))
         (longitude (read-dms stream))
         (lng-marker (read-char stream))
