@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2022-03-21 23:20:22>
+;;; Last Modified <michael 2023-03-09 21:44:53>
 
 (in-package :cl-geomath)
 
@@ -39,9 +39,9 @@
 (defconstant +knots-to-m/s+
   (/ +standard-nautical-mile+ 3600d0))
 
-(defun knots-to-m/s (knots)
+(defun-t knots-to-m/s double-float (knots)
   ;; (* 463.0 (/ knots 900.0)))
-  (* knots +knots-to-m/s+))
+  (coerce (* knots +knots-to-m/s+) 'double-float))
 
 (defun m/s-to-knots (m/s)
   ;; (* 900.0 (/ m/s 463.0)))

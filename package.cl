@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2022-03-03 23:24:38>
+;;; Last Modified <michael 2023-02-28 22:34:36>
 
 (defpackage "CL-GEOMATH"
   (:use "COMMON-LISP" "CFFI" "MACROS")
@@ -45,6 +45,7 @@
 
            "NORMALIZE-HEADING"
            "NORMALIZE-ANGLE"
+           "INORMALIZE-ANGLE"
 
            "FRACTION-INDEX"
            "BILINEAR-UNIT"

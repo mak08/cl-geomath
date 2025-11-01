@@ -1,9 +1,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2019
-;;; Last Modified <michael 2021-07-23 21:43:46>
+;;; Last Modified <michael 2025-10-15 20:51:44>
 
 (in-package :cl-geomath)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Trigonometric units
@@ -21,11 +22,13 @@
   (declare (double-float x))
   (* 180d0 (* x +1/pi+)))
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Datatypes
 
-(deftype rad-angle () (list 'double-float (- (* 2 pi)) (* 2 pi)))
+(deftype rad-angle () (list 'double-float (- (* 3 pi)) (* 3 pi)))
 (deftype latlng () (list 'simple-array 'rad-angle 1))
+
 
 (declaim (inline make-latlng))
 (defun make-latlng (&key (lat 0d0) (lng 0d0)
@@ -41,24 +44,20 @@
   (make-array 2 :element-type 'rad-angle :initial-contents ll))
 
 (declaim (inline latlng-latr))
-(defun latlng-latr (ll)
-  (declare (type latlng ll))
+(defun-t latlng-latr double-float ((ll latlng))
   (aref ll 0))
 
 (declaim (inline latlng-lngr))
-(defun latlng-lngr (ll)
-  (declare (type latlng ll))
+(defun-t latlng-lngr double-float ((ll latlng))
   (aref ll 1))
 
 (declaim (inline latlng-lat))
-(defun latlng-lat (ll)
-  (declare (type latlng ll))
-  (the double-float (deg (aref ll 0))))
+(defun-t latlng-lat double-float ((ll latlng))
+  (deg (aref ll 0)))
 
 (declaim (inline latlng-lng))
-(defun latlng-lng (ll)
-  (declare (type latlng ll))
-  (the double-float (deg (aref ll 1))))
+(defun-t latlng-lng double-float ((ll latlng))
+  (deg (aref ll 1)))
 
 
 (defun format-latlng (stream ll)

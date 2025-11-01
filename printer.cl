@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2023-02-19 21:47:16>
+;;; Last Modified <michael 2023-04-07 16:54:45>
 
 (in-package :cl-geomath)
 
@@ -46,7 +46,7 @@
          (if (< (latlng-lng thing) 0) "W" "E")))
     (format stream "#p[~a~a, ~a~a]" lat-value lat-marker lng-value lng-marker)))
 
-(set-dispatch-macro-character #\# #\p 'read-latlng)
+;; (set-dispatch-macro-character #\# #\p 'read-latlng)
 
 (defun read-latlng (stream sub-char arg)
   (declare (ignore sub-char arg))

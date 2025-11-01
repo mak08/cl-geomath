@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2022-03-14 20:38:40>
+;;; Last Modified <michael 2025-10-17 00:18:12>
 
 (in-package :cl-geomath)
 
@@ -163,7 +163,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Spherical distance
 
-(declaim (inline add-distance-exact))
+(declaim (notinline add-distance-exact))
 (defun add-distance-exact (pos distance alpha)
   ;; Exact calculation on the spherical Earth
   (declare (double-float distance alpha)
@@ -195,7 +195,7 @@
                    :lngr% lon-new-r))))
 ;; (declaim (notinline add-distance-exact))
 
-(declaim (inline add-distance-estimate))
+(declaim (notinline add-distance-estimate))
 (defun add-distance-estimate (pos distance alpha)
   ;; Approximation for short distances (<< 100km)
   (declare (double-float distance alpha)
@@ -239,7 +239,8 @@
         (if (<= sign 0) -1d0 1d0))))
 ;; (declaim (notinline longitudinal-direction))
 
-(declaim (inline course-distance))
+
+(declaim (notinline course-distance))
 (defun course-distance (origin target)
   (declare (ftype (function (t) double-float) latlng-latr latlng-lngr))
   (let* ((lat1 (latlng-latr origin))
@@ -285,7 +286,16 @@
       (if (> value 180d0)
           (the double-float (- value 360d0))
           value)))
-;; (declaim (notinline normalize-angle))
+
+(declaim (ftype (function (fixnum) fixnum) inormalize-angle))
+(defun inormalize-angle (value)
+  (declare (fixnum value))
+  (if (<= value -180)
+      (+ value 360)
+      (if (> value 180)
+          (- value 360)
+          value)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Course angle
@@ -442,6 +452,7 @@
          (or
           (<= left heading 360d0)
           (<= 0d0 heading right)))))
+      
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
