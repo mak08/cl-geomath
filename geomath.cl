@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2025-10-17 00:18:12>
+;;; Last Modified <michael 2026-02-10 23:55:40>
 
 (in-package :cl-geomath)
 
@@ -65,11 +65,11 @@
 ;; (declaim (notinline linear))
 
 (declaim (inline bilinear))
-(defun-t bilinear double-float ((u   double-float) 
-                                (v  double-float)
-                                (w00    double-float)
-                                (w01    double-float)
-                                (w10    double-float)
+(defun-t bilinear double-float ((u double-float) 
+                                (v double-float)
+                                (w00 double-float)
+                                (w01 double-float)
+                                (w10 double-float)
                                 (w11 double-float))
   "Bilinear interpolation at point (u v) given values  w_ik = f(u_i, v_k)"
   (let* ((w0
@@ -163,7 +163,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Spherical distance
 
-(declaim (notinline add-distance-exact))
+(declaim (inline add-distance-exact))
 (defun add-distance-exact (pos distance alpha)
   ;; Exact calculation on the spherical Earth
   (declare (double-float distance alpha)
@@ -195,7 +195,7 @@
                    :lngr% lon-new-r))))
 ;; (declaim (notinline add-distance-exact))
 
-(declaim (notinline add-distance-estimate))
+(declaim (inline add-distance-estimate))
 (defun add-distance-estimate (pos distance alpha)
   ;; Approximation for short distances (<< 100km)
   (declare (double-float distance alpha)
@@ -227,7 +227,7 @@
         (- 360d0 (deg d)))))
 ;; (declaim (notinline longitudinal-distance))
 
-(declaim (inline  longitudinal-direction))
+(declaim (inline longitudinal-direction))
 (defun longitudinal-direction (start dest)
   (let* ((start-lng (latlng-lngr start))
          (dest-lng (latlng-lngr dest))
@@ -240,7 +240,7 @@
 ;; (declaim (notinline longitudinal-direction))
 
 
-(declaim (notinline course-distance))
+(declaim (inline course-distance))
 (defun course-distance (origin target)
   (declare (ftype (function (t) double-float) latlng-latr latlng-lngr))
   (let* ((lat1 (latlng-latr origin))
@@ -373,15 +373,20 @@
                 (if (= ld 1d0)
                     omega
                     (- (* PI 2d0) omega))))))))))
-;; (declaim (notinline course-angle-d))
 
-#|
-(let ((omega%
-       (acos cos-omega)))
-  (if (complexp omega%)
-      (realpart omega%)
-      omega%))
-|#
+(declaim (inline add-polar-vectors))
+(defun add-polar-vectors (a1 r1 a2 r2)
+  (let* ((ra1 (rad a1))
+         (u1 (* r1 (cos ra1)))
+         (v1 (* r1 (sin ra1)))
+         (ra2 (rad a2))
+         (u2 (* r2 (cos ra2)))
+         (v2 (* r2 (sin ra2)))
+         (u (+ u1 u2))
+         (v (+ v1 v2)))
+    (declare (double-float a1 a1 r1 r2 u1 u2 v1 v2 u v))
+    (values (enorm u v)
+            (deg (atan v u)))))
 
 ;; Test if line segment (p1, p2) and (q1, q2) intersect.
 ;; Consider parallel lines non-intersecting even if they coincide.
