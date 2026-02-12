@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2019
-;;; Last Modified <michael 2025-10-15 20:51:44>
+;;; Last Modified <michael 2025-11-18 00:56:26>
 
 (in-package :cl-geomath)
 
@@ -10,12 +10,13 @@
 ;;; Trigonometric units
 
 (defconstant +1/360+ (/ 1 360d0))
+(defconstant +1/180+ (/ 1 180d0))
 (defconstant +1/PI+ (/ 1 PI))
 
 (declaim (inline rad))
 (defun rad (x)
   (declare (double-float x))
-  (* (* 2d0 pi) (* x +1/360+)))
+  (* pi (* x +1/180+)))
 
 (declaim (inline deg))
 (defun deg (x)
