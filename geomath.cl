@@ -92,6 +92,19 @@
      :finally (return (values (1- index)
                               (/ (- value (aref steps (1- index)))
                                  (- step (aref steps (1- index))))))))
+
+(declaim (inline fraction-index-double))
+(defun-t fraction-index-double (values fixnum double-float)
+    ((value double-float)
+     (steps (simple-array double-float (*))))
+  (loop
+     :for step :of-type double-float :across steps
+     :for index :from 0
+     :while (and (< index (length steps))
+                 (<= step value))
+     :finally (return (values (1- index)
+                              (/ (- value (aref steps (1- index)))
+                                 (- step (aref steps (1- index))))))))
 ;; (declaim (notinline fraction-index))
 
 (declaim (inline bilinear-unit))
