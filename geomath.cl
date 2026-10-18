@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Description
 ;;; Author         Michael Kappert 2018
-;;; Last Modified <michael 2026-02-10 23:55:40>
+;;; Last Modified <michael 2026-10-18 18:14:34>
 
 (in-package :cl-geomath)
 
@@ -254,11 +254,12 @@
          (cos-lat2 (realpart cis-lat2))
          (sin-lat2 (imagpart cis-lat2)))
     (declare (double-float +radius+ lat1 lon1 lat2 lon2 cos-lat1 sin-lat1 cos-lat2 sin-lat2))
-    (* (the double-float +radius+)
-       (the double-float
-            (acos (the double-float
-                       (+ (* sin-lat1 sin-lat2)
-                          (* cos-lat1 cos-lat2 (cos (- lon2 lon1))))))))))
+    (let ((dist (* (the double-float +radius+)
+                   (the double-float
+                        (acos (the double-float
+                                   (+ (* sin-lat1 sin-lat2)
+                                      (* cos-lat1 cos-lat2 (cos (- lon2 lon1))))))))))
+      dist)))
 ;; (declaim (notinline course-distance))
 
 
@@ -442,6 +443,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; 
 
+(declaim (inline longitude-between))
 (defun longitude-between (west east longitude)
   (declare (double-float west east longitude))
   (or (<= west longitude  east)
