@@ -5,33 +5,35 @@
 
 (in-package :cl-geomath)
 
-(CL-GEOMATH:ADD-DISTANCE-ESTIMATE (make-latlng :latr% 1.57059d0 :lngr% -2d0) 1440d0 24.0d0)
-(CL-GEOMATH:ADD-DISTANCE-EXACT (make-latlng :latr% 1.57059d0 :lngr% -2d0) 1440d0 24.0d0)
-
-(CL-GEOMATH:ADD-DISTANCE-ESTIMATE (make-latlng :latr% 1.5705d0 :lngr% -2d0) 1440d0 23.0d0)
-(CL-GEOMATH:ADD-DISTANCE-EXACT (make-latlng :latr% 1.5705d0 :lngr% -2d0) 1440d0 23.0d0)
-
-(CL-GEOMATH:ADD-DISTANCE-ESTIMATE (make-latlng :latr% 1.570d0 :lngr% -2d0) 1440d0 23.0d0)
-(CL-GEOMATH:ADD-DISTANCE-EXACT (make-latlng :latr% 1.570d0 :lngr% -2d0) 1440d0 23.0d0)
-
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (shadow '(check-equal check-delta-equal) :cl-geomath))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when (:load-toplevel :execute)
-  (defmacro check-delta-equal (form result &optional (delta  0.00001))
-    `(progn
-       (log2:info "Checking ~a => ~a" ',form ',result)
-       (assert (< (abs (- ,form ,result)) ,delta))
-       t)
-    )
+(defmacro check-delta-equal (form result &optional (delta 0.00001))
+  `(fiveam:is (< (abs (- ,form ,result)) ,delta)))
 
-  (defmacro check-equal (form result)
-    `(progn
-       (log2:info "Checking ~a => ~a" ',form ',result)
-       (assert (equal ,form ,result))
-       t)
-    )
-  )
+(defmacro check-equal (form result)
+  `(fiveam:is (equal ,form ,result)))
+
+(fiveam:def-suite cl-geomath-tests)
+(fiveam:in-suite cl-geomath-tests)
+
+(defvar *limits*)
+
+(fiveam:test geometry-regressions
+  (cl-geomath:add-distance-estimate
+   (make-latlng :latr% 1.57059d0 :lngr% -2d0) 1440d0 24.0d0)
+  (cl-geomath:add-distance-exact
+   (make-latlng :latr% 1.57059d0 :lngr% -2d0) 1440d0 24.0d0)
+  (cl-geomath:add-distance-estimate
+   (make-latlng :latr% 1.5705d0 :lngr% -2d0) 1440d0 23.0d0)
+  (cl-geomath:add-distance-exact
+   (make-latlng :latr% 1.5705d0 :lngr% -2d0) 1440d0 23.0d0)
+  (cl-geomath:add-distance-estimate
+   (make-latlng :latr% 1.570d0 :lngr% -2d0) 1440d0 23.0d0)
+  (cl-geomath:add-distance-exact
+   (make-latlng :latr% 1.570d0 :lngr% -2d0) 1440d0 23.0d0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  bilinear x y v00 v01 v10 v11
@@ -327,7 +329,6 @@
        (lng1 (dms-to-decimal (make-dms :u 1d0 :d 180 :m 01 :s 12 :cs 0)))
        (p0 (make-latlng :lat lat0 :lng lng0))
        (p1 (make-latlng :lat lat1 :lng lng1)))
-  (format t "p0: ~a, p1: ~a~%" p0 p1)
   (loop
      :for k :from 1 :below (length *limits*)
      :never (segment-intersects p0 p1 (aref *limits* (1- k)) (aref *limits* k))))
@@ -483,9 +484,10 @@
    (point-in-poly-p point poly))
  nil)
 
-
+)
 
 
 
 ;;; EOF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

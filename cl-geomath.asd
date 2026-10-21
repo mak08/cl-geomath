@@ -7,6 +7,7 @@
   :description "Basic math"
   :default-component-class cl-source-file.cl
   :depends-on ("log2" "makros")
+  :in-order-to ((test-op (test-op "cl-geomath/test")))
   :serial t
   :components ((:file "package")
                (:file "datatypes")
@@ -15,9 +16,17 @@
                (:file "geomath")
                (:file "fast-dist")
                (:file "printer")
-               (:file "places")
-               (:file "test")))
+               (:file "places")))
+
+(defsystem "cl-geomath/test"
+  :depends-on ("cl-geomath" "fiveam")
+  :default-component-class cl-source-file.cl
+  :components ((:file "tests/test"))
+  :perform (test-op (operation system)
+             (declare (ignore operation system))
+             (unless (uiop:symbol-call :fiveam :run!
+                                       (find-symbol "CL-GEOMATH-TESTS" "CL-GEOMATH"))
+               (error "cl-geomath tests failed"))))
 
 ;;; EOF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
